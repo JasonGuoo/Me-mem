@@ -34,11 +34,30 @@ Build a minimal but fully functional playback UI so the user can select any reco
 - Exposes Tauri command `get_recordings_list() -> Vec<RecordingInfo>`
 
 ### D3 — Player UI (`src/components/Player.svelte`)
-- Recording list panel (left): shows file name, date, duration
-- Video canvas (right): renders the selected recording
-- Controls bar: Play/Pause, Stop, Seek bar, Volume, Speed selector, Fullscreen toggle
-- Time display: `current / total` in HH:MM:SS
-- Selecting a different recording stops current playback and loads the new file
+Implement the Player tab from `docs/UI-design/UI-design.ts`. Exact structure:
+
+**Layout** (full height flex column):
+- Header: "Player" title + FolderOpen + RefreshCw icon buttons
+- Body: horizontal flex — recording list (30%) | video player area (70%)
+
+**Recording List (left panel)**:
+- Search/filter input with Search icon (filters by filename)
+- Scrollable list; each row: file name (bold, truncated) + date + duration
+- Selected row: blue `#0078D4` left border + light blue background tint
+- Unselected: transparent left border + gray hover
+
+**Video Player (right panel)**:
+- Black canvas area (flex-1) with centered Play icon placeholder (opacity-40)
+- When no video selected: dark gray background + "Select file to play" hint
+- **Controls bar** (white/95, border-top):
+  - Seek bar: thin `h-1` progress bar, blue fill, clickable
+  - Bottom row left: Play/Pause toggle + `current / total` time (tabular-nums)
+  - Bottom row right: Volume icon + thin volume bar + Speed selector (1.0x/1.5x/2.0x) + Maximize icon
+- **Metadata strip** below player (when selected): file name + date + "HD Capture" label + ExternalLink + MoreVertical buttons
+
+**Navigation**:
+- Switching to Player auto-selects first recording if none selected
+- Selecting a new recording from list stops current playback and loads new file
 
 ### D4 — App navigation (`src/App.svelte`)
 - Tab or sidebar toggle between **Recorder** (Session 1) and **Player** (Session 2)

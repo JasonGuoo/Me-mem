@@ -46,12 +46,47 @@ Set up the Rust/Tauri project and deliver a working recording pipeline: detect t
 - File name: `teams-YYYY-MM-DD-HHMMSS.mp4`
 - Exposes Tauri commands: `start_recording()`, `stop_recording()`, `get_recording_status()`
 
-### D6 — Minimal recorder UI (`src/components/Recorder.svelte`)
-- **Detect** button → calls `detect_teams_window`; shows window status
-- **Record / Stop** button → calls `start_recording` / `stop_recording`
-- Live recording timer (HH:MM:SS)
-- Audio level indicator (VU bar)
-- Inline error text for common failures
+### D6 — Recorder UI (`src/components/Recorder.svelte`)
+Implement the Recorder tab from `docs/UI-design/UI-design.ts`. Exact structure:
+
+**Layout** (max-w-3xl, centered):
+- Header: "Recorder" title + subtitle + "Live Capture" pulse badge when recording
+- 2-column grid: [Detection card + Output Info card] | [Controls card]
+- Success banner (green) shown after stop with file name + "Open Folder" / "View" links
+- Footer tip bar (blue dashed border)
+
+**Detection Card**:
+- Badge: `idle` (gray "Scanning...") → `detected` (green "Detected") state
+- "RE-SCAN" button top-right
+- When detected: shows target window name + Audio READY status
+- When idle: "Waiting for active Microsoft Teams window..."
+
+**Controls Card**:
+- Large 3xl tabular-nums timer (gray when idle, black when recording)
+- Single full-width button: blue "START RECORDING" (Circle icon) → red "STOP" (Square icon)
+- Disabled when detection state is idle
+- Compact 20-segment VU bar (green segments, amber at >16, gray when not recording)
+
+**Output Info Card**:
+- Location: output directory path (truncated)
+- Storage: live MB counter during recording (`timer * 1.1` MB estimate)
+
+**Global Sidebar** (shared across tabs, `w-48`):
+- "M" logo (blue #0078D4) + "Me-mem" title
+- Nav items: Recorder (Video icon), Player (History icon)
+- Active item: white bg, shadow, blue icon
+- Bottom: Settings button
+
+**Status Bar** (footer, `h-6`):
+- Left: recording state dot (red/green) + Teams connection state
+- Right: Disk free + current time
+
+**Theme tokens** (light, Windows-style):
+```
+bg: #F3F3F3  |  sidebar: #EBEBEB  |  surface: #FFFFFF
+border: #D1D1D1  |  accent: #0078D4
+success: #107C10  |  error: #C42B1C
+```
 
 ---
 
